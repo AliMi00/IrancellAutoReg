@@ -15,12 +15,12 @@ class irancellBot():
         pas = self.driver.find_element_by_name('dealerpassword')
         pasOtp = self.driver.find_element_by_name('otp')
 
-        # otp = input('insert and enter the otp : ')
+        otp = input('insert and enter the otp : ')
 
         #pass data
         pas.send_keys('_e41_e41')
         user.send_keys('ehsan.mob')
-        # pasOtp.send_keys(otp)
+        pasOtp.send_keys(otp)
 
         loginSub = self.driver.find_element_by_xpath('//*[@id="loginform"]/div[5]/div/div/button')
         loginSub.click()

@@ -17,7 +17,7 @@ class irancellBot():
         option = webdriver.ChromeOptions()
         option.add_argument('--ignore-certificate-errors')
 
-        chromePath = 'G:\drive_D\Python\seleniumVenv\selenium-try\chromedriver.exe'
+        chromePath = 'G:\drive_D\Python\seleniumVenv\selenium-try\IrancellAutoReg\chromedriver.exe'
 
         self.driver = webdriver.Chrome(chromePath,chrome_options=option)
         self.driver.get("https://crm.irancell.ir")
@@ -26,15 +26,7 @@ class irancellBot():
         self.login()
         sleep(1)
         print('loaded 1 ------------------------------------->')
-        # self.pageLoad('/html/body/div/div/div/div/ui-view/div/div[3]/div/div/div[2]/span[2]/span/a')
-        # time.sleep(1)
-        # self.kitDetails()
-        # time.sleep(1)
-        # print('loaded 2 ------------------------------------->')
 
-        # # self.pageLoad('/html/body/div/div/div/div/ui-view/div/div[3]/div/div/div[2]/span[2]/span/a')
-        # self.CustomerProfile()
-        # print('loaded 3 ------------------------------------->')
 
     #login 
     def login(self):
@@ -225,11 +217,7 @@ class irancellBot():
     def completRegester(self):
 
 #TODO : problem to locate the button 
-        nextBtnXpath = '/html/body/div/div/div/div/ui-view/div[2]/div[2]/div[2]/div[2]/button'
-        sleep(1)
-        self.pageLoad(nextBtnXpath)
-
-        nextBtn = self.driver.find_element_by_xpath(nextBtn)
+        nextBtn = self.driver.find_element_by_xpath('/html/body/div/div/div/div/ui-view/div[2]/div[2]/div[2]/div[2]/button')
         nextBtn.click()
 
         confirmXpath = '/html/body/div[3]/div/div/div[3]/button[1]'
@@ -237,19 +225,35 @@ class irancellBot():
         confirmBtn = self.driver.find_element_by_xpath(confirmXpath)
         confirmBtn.click()
 
+        sleep(1)
         doneBtnXpath = '/html/body/div/div/div/div/ui-view/div/div[2]/div[2]/div[2]/button'
         self.pageLoad(doneBtnXpath)
         donBtn = self.driver.find_element_by_xpath(doneBtnXpath)
         donBtn.click()
 
 
-
-
-
-
-
-
-
+    def oneReg(self,kits,info):
+        sleep(1)
+        s.kitDetails(kits)
+        sleep(1)
+        if (s.driver.current_url == 'http://crm.irancell.ir/clm-ui/#/customers/quick-register-kit/customer-profile/'):
+            s.CustomerProfile(info)
+            if(s.driver.current_url == 'http://crm.irancell.ir/clm-ui/#/customers/quick-register-kit/review/'):
+                sleep(1)
+                s.checkAndSend()
+                if(s.driver.current_url == 'http://crm.irancell.ir/clm-ui/#/customers/quick-register-kit/upload-documents/'):
+                    sleep(2)
+                    s.completRegester()
+                else:
+                    s.cancelingRegester()
+                    return False
+            else:
+                s.cancelingRegester()
+                return False
+        else:
+            s.cancelingRegester()
+            return False
+        return True        
 
 
 class rege():
@@ -267,71 +271,30 @@ file = open(path,'r',encoding='utf-8')
 reader = csv.reader(file)
 failed = ['status']
 
-start = input('enter to start : ')
 
 for row in reader:
     allData.append(row)
-    info = row[2:]
-    kits = row[:2]
+    if row[0] != 'kit':
 
-    try:
+        info = row[2:]
+        kits = row[:2]
+        print('not pass')
         try:
-            s.kitDetails(kits)
-            sleep(1)
-            try:
-                s.CustomerProfile(info)
-                sleep(1)
+            results = s.oneReg(kits,info)
+            if results == False:
                 try:
-                    s.checkAndSend()
-                    sleep(1)
-                    try:
-                        s.completRegester()
-                        sleep(1)
-                    except:
-                        s.driver.get('http://crm.irancell.ir/clm-ui/#/customers/quick-register-kit/kit-details/')
-                        sleep(2)
-                        s.cancelingRegester()
-                except:
                     s.cancelingRegester()
-            except:
-                s.cancelingRegester()
+                except:
+                    print('Warning')             
         except:
             s.cancelingRegester()
-    except:
-        print('faild reg ' + kits[0])
-
-        
+            print(False)
 
 
-    # try:
-    #     s.kitDetails(kits)
-    #     sleep(1)
-    #     s.CustomerProfile(info)
-    #     sleep(1)
-    #     print('1')
-    #     s.checkAndSend()
-    #     print(2)
-    #     s.pageLoad('/html/body/div/div/div/div/ui-view/div[2]/div[1]/div[2]/ui-view/div/div[2]/div/div/div[4]/div')
-    #     s.completRegester()
-    #     print(3)
-    #     failed.append(True)
-    # except:
-    #     # s.cancelingRegester()
-    #     failed.append(kits[0])
-    #     print('error')
-    # try:
-    #     s.completRegester()
-    # except:
-    #     print('Error Reg')
-    # try:
-    #     s.cancelingRegester()
-    # except:
-    #     print('Er Cancel')
-
-a = 0
-for i in allData:
-    i[15] = failed[a]
-    a += 1
+# a = 0
+# for i in allData:
+#     i[15] = failed[a]
+#     a += 1
 
 # file = open(path,'w',newline='',encoding='utf-8')
 # writer = csv.writer(file)
