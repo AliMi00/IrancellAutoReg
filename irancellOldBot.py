@@ -7,6 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from time import sleep
 import csv
+import os
 
 
 
@@ -17,7 +18,7 @@ class irancellBot():
         option = webdriver.ChromeOptions()
         option.add_argument('--ignore-certificate-errors')
 
-        chromePath = 'G:\drive_D\Python\seleniumVenv\selenium-try\IrancellAutoReg\chromedriver.exe'
+        chromePath = 'G:\drive_D\Python\chromeDriver\chromedriver.exe'
 
         self.driver = webdriver.Chrome(chromePath,chrome_options=option)
         self.driver.get("https://crm.irancell.ir")
@@ -36,8 +37,11 @@ class irancellBot():
         user = self.driver.find_element_by_name('username')
         pas = self.driver.find_element_by_name('password')
 
-        username = input('Please Enter Username : ')
-        password = input('Please Enter Password : ')
+        # username = input('Please Enter Username : ')
+        # password = input('Please Enter Password : ')
+
+        username = 'azadeh.je'
+        password = '_a58_a58'
         #pass data
         pas.send_keys(password)
         user.send_keys(username)
@@ -238,11 +242,12 @@ class irancellBot():
         sleep(1)
         if (s.driver.current_url == 'http://crm.irancell.ir/clm-ui/#/customers/quick-register-kit/customer-profile/'):
             s.CustomerProfile(info)
+            sleep(2)
             if(s.driver.current_url == 'http://crm.irancell.ir/clm-ui/#/customers/quick-register-kit/review/'):
-                sleep(1)
+                sleep(3)
                 s.checkAndSend()
                 if(s.driver.current_url == 'http://crm.irancell.ir/clm-ui/#/customers/quick-register-kit/upload-documents/'):
-                    sleep(2)
+                    sleep(4)
                     s.completRegester()
                 else:
                     s.cancelingRegester()
@@ -261,9 +266,9 @@ class rege():
         super().__init__()
 
         
-s = irancellBot()
+# s = irancellBot()
 
-path = 'G:\\book2.csv'
+path = 'G:\\t2.csv'
 info = []
 kits = []
 allData = []
@@ -280,6 +285,7 @@ for row in reader:
         kits = row[:2]
         print('not pass')
         try:
+            s = irancellBot()
             results = s.oneReg(kits,info)
             if results == False:
                 try:
@@ -287,8 +293,8 @@ for row in reader:
                 except:
                     print('Warning')             
         except:
-            s.cancelingRegester()
             print(False)
+
 
 
 # a = 0
