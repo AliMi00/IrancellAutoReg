@@ -37,11 +37,10 @@ class irancellBot():
         user = self.driver.find_element_by_name('username')
         pas = self.driver.find_element_by_name('password')
 
-        # username = input('Please Enter Username : ')
-        # password = input('Please Enter Password : ')
+        username = input('Please Enter Username : ')
+        password = input('Please Enter Password : ')
 
-        username = 'azadeh.je'
-        password = '_a58_a58'
+
         #pass data
         pas.send_keys(password)
         user.send_keys(username)
